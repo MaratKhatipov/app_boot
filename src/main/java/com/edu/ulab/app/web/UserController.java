@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Pattern;
 
+import java.util.List;
+
 import static com.edu.ulab.app.web.constant.WebConstant.REQUEST_ID_PATTERN;
 import static com.edu.ulab.app.web.constant.WebConstant.RQID;
 
@@ -42,6 +44,11 @@ public class UserController {
     }
 
     @PutMapping(value = "/update")
+    @Operation(summary = "update user with book row if exist, else create user book row",
+            responses = {
+                    @ApiResponse(description = "User book",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserBookResponse.class)))})
     public UserBookResponse updateUserWithBooks(@RequestBody UserBookRequest request) {
         UserBookResponse response = userDataFacade.updateUserWithBooks(request);
         log.info("Response with updated user and his books: {}", response);
@@ -49,15 +56,37 @@ public class UserController {
     }
 
     @GetMapping(value = "/get/{userId}")
+    @Operation(summary = "Return user with book after update by user ID",
+    responses = {
+            @ApiResponse(description = "User book",
+            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+            schema = @Schema(implementation = UserBookResponse.class)))})
     public UserBookResponse updateUserWithBooks(@PathVariable Long userId) {
         UserBookResponse response = userDataFacade.getUserWithBooks(userId);
         log.info("Response with user and his books: {}", response);
         return response;
     }
 
+    @Operation(summary = "Delete user book row if exists, else do nothing",
+            responses = {
+                    @ApiResponse(description = "User book",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserBookResponse.class)))})
     @DeleteMapping(value = "/delete/{userId}")
     public void deleteUserWithBooks(@PathVariable Long userId) {
         log.info("Delete user and his books:  userId {}", userId);
         userDataFacade.deleteUserWithBooks(userId);
+    }
+
+    @GetMapping(value = "")
+    @Operation(summary = "Return all users with books.",
+            responses = {
+                    @ApiResponse(description = "User book",
+                            content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
+                                    schema = @Schema(implementation = UserBookResponse.class)))})
+    public List<UserBookResponse> getAll() {
+        List<UserBookResponse> response = userDataFacade.getAll();
+        log.info("Response with user and his books: {}", response);
+        return response;
     }
 }
