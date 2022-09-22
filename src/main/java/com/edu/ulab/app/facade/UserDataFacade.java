@@ -3,6 +3,7 @@ package com.edu.ulab.app.facade;
 import com.edu.ulab.app.dto.BookDto;
 import com.edu.ulab.app.dto.UserDto;
 import com.edu.ulab.app.exception.NotFoundException;
+import com.edu.ulab.app.exception.UserNotFoundException;
 import com.edu.ulab.app.mapper.BookMapper;
 import com.edu.ulab.app.mapper.UserMapper;
 import com.edu.ulab.app.service.BookService;
@@ -86,7 +87,7 @@ public class UserDataFacade {
     public UserBookResponse getUserWithBooks(Long userId) {
         UserDto userDto = userService.getUserById(userId);
         if (userDto == null) {
-            throw new NotFoundException("not found user with ID: " + userId);
+            throw new UserNotFoundException("not found user with ID: " + userId);
         }
         log.info("User in getUserWithBooks(): {}", userDto);
         List<Long> bookIdList = bookService.getBookByUserId(userDto.getId())
